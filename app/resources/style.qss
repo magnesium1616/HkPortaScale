@@ -43,6 +43,47 @@ QGroupBox::title {
     padding: 0 5px;
 }
 
+/* ボタン */
+QPushButton {
+    padding: 8px 16px;
+    border-radius: 4px;
+    background-color: #444;
+    color: white;
+}
+
+QPushButton:hover {
+    background-color: #555;
+}
+
+QPushButton:pressed {
+    background-color: #333;
+}
+
+QPushButton#upscaleButton {
+    background-color: #FF8C00;
+    color: black;
+    font-weight: bold;
+}
+
+QPushButton#upscaleButton:hover {
+    background-color: #FFA500;
+}
+
+QPushButton#upscaleButton:pressed {
+    background-color: #FF7F00;
+}
+
+/* プログレスバー */
+QProgressBar {
+    border: 1px solid #666;
+    border-radius: 3px;
+    text-align: center;
+    background-color: #333;
+}
+
+QProgressBar::chunk {
+    background-color: #FF8C00;
+}
 
 /* ラジオボタン */
 QRadioButton {
@@ -168,4 +209,58 @@ QMessageBox QLabel {
 
 QMessageBox QPushButton {
     min-width: 80px;
+}
+
+/* コンボボックス */
+
+QComboBox {
+    background-color: #444;
+    color: white;
+    
+}
+
+QComboBox:hover {
+    background-color: #555;
+}
+
+QComboBox::drop-down {
+    width: 20px;
+    border: none;
+    background: transparent;
+}
+
+QComboBox::down-arrow {
+    background: transparent;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #444;
+    color: white;
+    selection-background-color: #FF8C00;
+    selection-color: white;
+    border: 1px solid #666;
+}
+
+
+
+/* ドロップエリア */
+DropArea {
+    border: 2px dashed #666;
+    border-radius: 5px;
+    background-color: #2A2A2A;
+}
+
+DropArea:hover {
+    border-color: #FF8C00;
+}
+
+DropArea[dragging="true"] {
+    border: 2px dashed #FF8C00;
+    background-color: #333;
+}
+
+/* チェックボックス */
+QCheckBox {
+    color: #FFF;
+    spacing: 5px;  /* チェックボックスとテキストの間隔 */
 }

@@ -1,21 +1,26 @@
 # -*- coding: utf-8 -*-
 import json
 import os
+import sys
 from typing import Dict, Any
 
 class Config:
     """アプリケーション設定の管理クラス"""
     
     def __init__(self, config_dir: str = "config"):
-        self.config_dir = config_dir
-        self.config_file = os.path.join(config_dir, "settings.json")
+        self.base_path = self._get_base_path()
+        self.config_dir = os.path.join(self.base_path, config_dir)
+        self.config_file = os.path.join(self.config_dir, "settings.json")
         self.default_settings = {
             "output_suffix": "_upscaled",
             "output_dir": "upscale",
             "default_scale": 4,
             "default_format": "png",
             "jpg_quality": 80,
-            "default_model": "realesr-animevideov3"
+            "default_model": "realesrgan-x4plus-anime",
+            "rename_enabled": False,
+            "rename_name": "",
+            "padding_digits": 4
         }
         self.current_settings = self.load_settings()
     
@@ -57,3 +62,18 @@ class Config:
         """複数の設定を一括更新して保存"""
         self.current_settings.update(settings)
         self.save_settings()
+    
+    @staticmethod
+    def _get_base_path() -> str:
+        """アプリケーションのベースパスを取得"""
+        if hasattr(sys, '_MEIPASS'):  # PyInstallerでビルドされた場合
+            return sys._MEIPASS
+        return os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+    
+    def get_models_dir(self) -> str:
+        """モデルディレクトリのパスを取得"""
+        return os.path.join(self.base_path, "models")
+    
+    def get_executable_path(self) -> str:
+        """実行ファイルのパスを取得"""
+        return os.path.join(self.base_path, "realesrgan-ncnn-vulkan.exe")

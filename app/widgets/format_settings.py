@@ -12,8 +12,9 @@ class FormatSettings(QWidget):
     # 設定変更時のシグナル
     settings_changed = Signal(dict)  # 設定値の辞書
     
-    def __init__(self, parent=None):
+    def __init__(self, config, parent=None):
         super().__init__(parent)
+        self.config = config
         self.setup_ui()
     
     def setup_ui(self):
@@ -50,11 +51,15 @@ class FormatSettings(QWidget):
         format_hlayout.addWidget(self.format_combo)
         format_layout.addLayout(format_hlayout)
         
-        # JPG品質設定（現在は非表示）
+        # JPG品質設定
+        quality_layout = QHBoxLayout()
+        self.quality_label = QLabel("JPG品質: 80%")
         self.quality_slider = QSlider(Qt.Horizontal)
         self.quality_slider.setRange(1, 100)
-        self.quality_slider.setValue(80)
-        self.quality_slider.hide()
+        self.quality_slider.setValue(self.config.get_setting("jpg_quality"))
+        quality_layout.addWidget(self.quality_label)
+        quality_layout.addWidget(self.quality_slider)
+        format_layout.addLayout(quality_layout)
         
         format_group.setLayout(format_layout)
         layout.addWidget(format_group)
@@ -74,19 +79,18 @@ class FormatSettings(QWidget):
         self.quality_label.setText(f"JPG品質: {value}%")
         self._emit_settings()
     
-    def _emit_settings(self, *args):
-        """設定変更を通知"""
-        settings = {
-            "scale": self.scale_group.checkedButton().scale_value,
-            "format": self.format_combo.currentText().lower(),
-            "jpg_quality": self.quality_slider.value()
-        }
-        self.settings_changed.emit(settings)
-    
-    def get_settings(self) -> dict:
+    def _get_current_settings(self) -> dict:
         """現在の設定値を取得"""
         return {
             "scale": self.scale_group.checkedButton().scale_value,
             "format": self.format_combo.currentText().lower(),
             "jpg_quality": self.quality_slider.value()
         }
+    
+    def _emit_settings(self, *args):
+        """設定変更を通知"""
+        self.settings_changed.emit(self._get_current_settings())
+    
+    def get_settings(self) -> dict:
+        """現在の設定値を取得"""
+        return self._get_current_settings()

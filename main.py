@@ -20,12 +20,12 @@ def main():
     import warnings
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     
-    app = QApplication(sys.argv)
-    
     # High DPI対応（Qt6の新しい方法）
-    app.setHighDpiScaleFactorRoundingPolicy(
+    QApplication.setHighDpiScaleFactorRoundingPolicy(
         Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
     )
+    
+    app = QApplication(sys.argv)
     
     # ダークテーマの設定
     app.setStyle('Fusion')

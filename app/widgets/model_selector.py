@@ -12,8 +12,9 @@ class ModelSelector(QWidget):
     # モデルが選択された時のシグナル
     model_selected = Signal(str)  # モデル名
     
-    def __init__(self, parent=None):
+    def __init__(self, config, parent=None):
         super().__init__(parent)
+        self.config = config
         self.setup_ui()
         self.load_models()
     
@@ -33,13 +34,7 @@ class ModelSelector(QWidget):
     
     def load_models(self):
         """models/ディレクトリからモデルを読み込む"""
-        # 実行ファイルのパスを取得
-        if hasattr(sys, '_MEIPASS'):  # PyInstallerでビルドされた場合
-            base_path = sys._MEIPASS
-        else:
-            base_path = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-        
-        models_dir = os.path.join(base_path, "models")
+        models_dir = self.config.get_models_dir()
         
         # コンボボックスをクリア
         self.combo.clear()
@@ -59,9 +54,15 @@ class ModelSelector(QWidget):
             for model_name in sorted(model_files):
                 self.combo.addItem(model_name)
             
-            # デフォルトモデルを選択（最初のモデル）
-            if self.combo.count() > 0:
-                self.combo.setCurrentIndex(0)
+            # デフォルトモデルを選択
+            default_model = "realesrgan-x4plus-anime"
+            default_index = self.combo.findText(default_model)
+            if default_index >= 0:
+                self.combo.setCurrentIndex(default_index)
+            else:
+                # デフォルトモデルが見つからない場合は最初のモデルを選択
+                if self.combo.count() > 0:
+                    self.combo.setCurrentIndex(0)
                 
         except Exception as e:
             print(f"モデルの読み込みに失敗しました: {e}")

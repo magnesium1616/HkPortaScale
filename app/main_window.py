@@ -34,7 +34,8 @@ class UpscaleThread(QThread):
                 self.args[3],    # output_format
                 self.args[4],    # jpg_quality
                 self.args[5],    # suffix
-                self.args[6]     # output_dir
+                self.args[6],    # output_dir
+                self.args[7]     # rename_settings
             )
         else:
             # ファイルまたは複数のパスが選択された場合
@@ -45,7 +46,8 @@ class UpscaleThread(QThread):
                 self.args[3],    # output_format
                 self.args[4],    # jpg_quality
                 self.args[5],    # suffix
-                self.args[6]     # output_dir
+                self.args[6],    # output_dir
+                self.args[7]     # rename_settings
             )
 
 class MainWindow(QMainWindow):
@@ -59,7 +61,7 @@ class MainWindow(QMainWindow):
         self.config = Config()
         
         # プロセッサーの初期化
-        self.processor = ESRGANProcessor()
+        self.processor = ESRGANProcessor(self.config)
         self.processor.progress.connect(self._on_progress)
         self.processor.progress_value.connect(self._on_progress_value)
         self.processor.error.connect(self._on_error)
@@ -110,40 +112,10 @@ class MainWindow(QMainWindow):
         
         self.setPalette(palette)
         
-        # ボタンのスタイル
-        self.setStyleSheet("""
-            QPushButton {
-                padding: 8px 16px;
-                border-radius: 4px;
-                background-color: #444;
-            }
-            QPushButton:hover {
-                background-color: #555;
-            }
-            QPushButton:pressed {
-                background-color: #333;
-            }
-            QPushButton#upscaleButton {
-                background-color: #FF8C00;
-                color: black;
-                font-weight: bold;
-            }
-            QPushButton#upscaleButton:hover {
-                background-color: #FFA500;
-            }
-            QPushButton#upscaleButton:pressed {
-                background-color: #FF7F00;
-            }
-            QProgressBar {
-                border: 1px solid #666;
-                border-radius: 3px;
-                text-align: center;
-                background-color: #333;
-            }
-            QProgressBar::chunk {
-                background-color: #FF8C00;
-            }
-        """)
+        # スタイルシートの読み込み
+        style_path = os.path.join(os.path.dirname(__file__), "resources", "style.qss")
+        with open(style_path, 'r', encoding='utf-8') as f:
+            self.setStyleSheet(f.read())
     
     def create_main_tab(self):
         """メインタブの作成"""
@@ -157,11 +129,11 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.drop_area)
         
         # モデル選択
-        self.model_selector = ModelSelector()
+        self.model_selector = ModelSelector(self.config)
         layout.addWidget(self.model_selector)
         
         # フォーマット設定
-        self.format_settings = FormatSettings()
+        self.format_settings = FormatSettings(self.config)
         layout.addWidget(self.format_settings)
         
         # プログレスバー
@@ -187,14 +159,7 @@ class MainWindow(QMainWindow):
     
     def create_settings_tab(self):
         """詳細設定タブの作成"""
-        self.settings_tab = SettingsTab()
-        
-        # 設定の読み込み
-        settings = {
-            "output_suffix": self.config.get_setting("output_suffix"),
-            "output_dir": self.config.get_setting("output_dir")
-        }
-        self.settings_tab.set_settings(settings)
+        self.settings_tab = SettingsTab(self.config)
         
         # 設定変更時の処理
         self.settings_tab.settings_changed.connect(self.config.update_settings)
@@ -218,7 +183,8 @@ class MainWindow(QMainWindow):
         
         # UIの更新
         self.upscale_button.setEnabled(False)
-        self.progress_bar.setRange(0, 0)  # 不定のプログレス表示
+        self.progress_bar.setRange(0, 100)  # 0-100%の範囲を設定
+        self.progress_bar.setValue(0)        # 初期値を0に設定
         self.progress_bar.show()
         
         # 設定の取得
@@ -227,11 +193,10 @@ class MainWindow(QMainWindow):
         
         # 出力ディレクトリの設定
         if len(self.input_paths) > 1:
-            # 複数ファイルの場合、最初のファイル名をベースにフォルダを作成
+            # 複数ファイルの場合、設定されたディレクトリを作成
             first_file = self.input_paths[0]
             first_file_dir = os.path.dirname(first_file)
-            first_file_name = os.path.splitext(os.path.basename(first_file))[0]
-            output_dir = os.path.join(first_file_dir, f"{first_file_name}_upscaled")
+            output_dir = os.path.join(first_file_dir, output_settings["output_dir"])
         else:
             output_dir = None
 
@@ -244,7 +209,8 @@ class MainWindow(QMainWindow):
             format_settings["format"],
             format_settings["jpg_quality"],
             output_settings["output_suffix"],
-            output_dir
+            output_dir,
+            output_settings     # リネーム設定を含む
         )
         self.upscale_thread.finished.connect(self._on_thread_finished)
         self.upscale_thread.start()

@@ -31,45 +31,22 @@ class DropArea(QWidget):
         
         # 最小サイズの設定
         self.setMinimumHeight(200)
-        
-        # スタイルの設定
-        self.setStyleSheet("""
-            DropArea {
-                border: 2px dashed #666;
-                border-radius: 5px;
-                background-color: #2A2A2A;
-            }
-            DropArea:hover {
-                border-color: #FF8C00;
-            }
-        """)
     
     def dragEnterEvent(self, event: QDragEnterEvent):
         """ドラッグされたアイテムが領域に入った時"""
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
-            # ドラッグ中のスタイル変更
-            self.setStyleSheet("""
-                DropArea {
-                    border: 2px dashed #FF8C00;
-                    border-radius: 5px;
-                    background-color: #333;
-                }
-            """)
+            # ドラッグ中のクラス設定
+            self.setProperty("dragging", True)
+            self.style().unpolish(self)
+            self.style().polish(self)
     
     def dragLeaveEvent(self, event):
         """ドラッグされたアイテムが領域から出た時"""
-        # 通常のスタイルに戻す
-        self.setStyleSheet("""
-            DropArea {
-                border: 2px dashed #666;
-                border-radius: 5px;
-                background-color: #2A2A2A;
-            }
-            DropArea:hover {
-                border-color: #FF8C00;
-            }
-        """)
+        # ドラッグ中のクラス設定を解除
+        self.setProperty("dragging", False)
+        self.style().unpolish(self)
+        self.style().polish(self)
     
     def dropEvent(self, event: QDropEvent):
         """アイテムがドロップされた時"""
