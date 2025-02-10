@@ -87,6 +87,7 @@ class ESRGANProcessor(QObject):
                      suffix: str = "_upscaled",
                      output_dir: Optional[str] = None,
                      rename_settings: Optional[dict] = None) -> None:
+        
         """ファイルのアップスケール処理"""
         try:
             total_files = len(input_paths)

@@ -1,4 +1,4 @@
-# Python関連
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -17,41 +17,29 @@ sdist/
 var/
 wheels/
 *.egg-info/
+.installed.cfg
+*.egg
 
-# 仮想環境
+# Virtual Environment
 venv/
-env/
 ENV/
+env/
 
-# IDE関連
+# IDE
 .idea/
 .vscode/
 *.swp
 *.swo
-.history
+.project
+.pydevproject
+.settings
 
-# OS関連
+# OS
 .DS_Store
 Thumbs.db
-Desktop.ini
+desktop.ini
 
-# 実行ファイル
-*.exe
-*.dll
-*.bin
-
-# ログファイル
-*.log
-
-# キャッシュ
-.cache/
-.temp/
-
-# 設定ファイル
-.env
-.env.local
-.env.*.local
-
-# ビルド出力
-/build/
-/dist/
+# Application specific
+config/settings.json
+*.spec
+upscale/

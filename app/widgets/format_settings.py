@@ -47,13 +47,16 @@ class FormatSettings(QWidget):
         format_hlayout = QHBoxLayout()
         self.format_combo = QComboBox()
         self.format_combo.addItems(["PNG", "JPG"])
+        # デフォルト値を設定
+        self.format_combo.setCurrentText(self.config.get_setting("default_format").upper())
         format_hlayout.addWidget(QLabel("フォーマット:"))
         format_hlayout.addWidget(self.format_combo)
         format_layout.addLayout(format_hlayout)
         
         # JPG品質設定
         quality_layout = QHBoxLayout()
-        self.quality_label = QLabel("JPG品質: 80%")
+        jpg_quality = self.config.get_setting("jpg_quality")
+        self.quality_label = QLabel(f"JPG品質: {jpg_quality}%")
         self.quality_slider = QSlider(Qt.Horizontal)
         self.quality_slider.setRange(1, 100)
         self.quality_slider.setValue(self.config.get_setting("jpg_quality"))
@@ -71,9 +74,11 @@ class FormatSettings(QWidget):
     
     def _on_format_changed(self, format_text: str):
         """フォーマット選択が変更された時"""
-        self.quality_slider.setEnabled(format_text == "JPG")
+        is_jpg = format_text == "JPG"
+        self.quality_slider.setEnabled(is_jpg)
+        self.quality_label.setEnabled(is_jpg)  # ラベルも連動して有効/無効を切り替え
         self._emit_settings()
-    
+        
     def _on_quality_changed(self, value: int):
         """JPG品質が変更された時"""
         self.quality_label.setText(f"JPG品質: {value}%")

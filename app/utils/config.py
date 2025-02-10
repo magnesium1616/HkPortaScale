@@ -15,7 +15,7 @@ class Config:
             "output_suffix": "_upscaled",
             "output_dir": "upscale",
             "default_scale": 4,
-            "default_format": "png",
+            "default_format": "jpg",
             "jpg_quality": 80,
             "default_model": "realesrgan-x4plus-anime",
             "rename_enabled": False,

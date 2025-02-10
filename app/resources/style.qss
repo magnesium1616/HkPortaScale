@@ -212,11 +212,10 @@ QMessageBox QPushButton {
 }
 
 /* コンボボックス */
-
+/*
 QComboBox {
     background-color: #444;
-    color: white;
-    
+    color: white;    
 }
 
 QComboBox:hover {
@@ -240,7 +239,7 @@ QComboBox QAbstractItemView {
     selection-color: white;
     border: 1px solid #666;
 }
-
+*/
 
 
 /* ドロップエリア */
