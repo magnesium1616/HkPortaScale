@@ -5,6 +5,7 @@ from PySide6.QtWidgets import (
     QLabel, QPushButton, QTabWidget, QProgressBar,
     QMessageBox
 )
+import sys
 from PySide6.QtCore import Qt, QThread
 from PySide6.QtGui import QIcon, QPalette, QColor
 
@@ -54,7 +55,17 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("HkPortaScale")
-        self.setWindowIcon(QIcon("icon/app_icon.ico"))
+        
+        # アイコンのパスを実行ファイルの場所から解決
+        if getattr(sys, 'frozen', False):
+            # PyInstallerでビルドされた場合
+            base_path = sys._MEIPASS
+        else:
+            # 通常の実行の場合
+            base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        
+        icon_path = os.path.join(base_path, "icon", "app_icon.ico")
+        self.setWindowIcon(QIcon(icon_path))
         self.setMinimumSize(800, 600)
         
         # 設定の初期化
