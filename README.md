@@ -1,6 +1,7 @@
 # HkPortaScale
 
 Real-ESRGAN ncnn Vulkanを使用した画像アップスケーリングのためのGUIアプリケーションです。
+![demo01](https://github.com/user-attachments/assets/cda670ee-15ae-468c-a472-f7d816f7832f)
 
 ## 特徴
 
