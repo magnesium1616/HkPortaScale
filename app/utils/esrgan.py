@@ -111,13 +111,17 @@ class ESRGANProcessor(QObject):
                 # 一時的な出力パスの生成（常にPNG）
                 temp_output_path = self._get_temp_output_path(output_path)
                 
+                # カスタム倍率の場合は警告を表示
+                if isinstance(scale, float):
+                    self.progress.emit("注意: カスタム倍率はテストモードです。正常に動作しない可能性があります。")
+                
                 # コマンドの構築（常にPNGで出力）
                 cmd = [
                     self.executable,
                     "-i", input_path,
                     "-o", temp_output_path,
                     "-n", model_name,
-                    "-s", str(scale),
+                    "-s", str(scale),  # float型の倍率もstr()で文字列化
                     "-m", self.models_dir,
                     "-f", "png"  # 常にPNGで出力
                 ]

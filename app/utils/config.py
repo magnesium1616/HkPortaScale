@@ -20,7 +20,9 @@ class Config:
             "default_model": "realesrgan-x4plus-anime",
             "rename_enabled": False,
             "rename_name": "",
-            "padding_digits": 4
+            "padding_digits": 4,
+            "custom_scale_enabled": False,
+            "custom_scale_value": 2.0
         }
         self.current_settings = self.load_settings()
     

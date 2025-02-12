@@ -6,6 +6,8 @@
     "jpg_quality": 80,
     "default_model": "realesrgan-x4plus-anime",
     "rename_enabled": true,
-    "rename_name": "cccc_",
-    "padding_digits": 4
+    "rename_name": "animeSharp",
+    "padding_digits": 4,
+    "custom_scale_enabled": false,
+    "custom_scale_value": 2.0
 }
